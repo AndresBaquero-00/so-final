@@ -15,7 +15,7 @@ function createToast(message, type) {
     notif.append(notifIcon);
     setTimeout(() => {
         notif.remove();
-    }, 3000);
+    }, 5000);
 }
 function setProperties(type) {
     let propertyList;

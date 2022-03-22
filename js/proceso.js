@@ -42,7 +42,7 @@ let ejecutar = false;
 /**
  * Tiempo máximo que espera un proceso en una cola de espera.
  */
-const tiempoMax = 30;
+const tiempoMax = 15;
 /**
  * Función encargada de crear un nuevo proceso a partir de una plantilla.
  * @param nombre Nombre del proceso.
@@ -248,6 +248,9 @@ const handler = () => {
         }
     });
     colaRR.forEach((p, i, v) => {
+        if (seconds < p.tiempo.tiempo_llegada) {
+            return;
+        }
         p.tiempo.tiempo_cola++;
         if (p.tiempo.tiempo_cola >= tiempoMax) {
             v[i].tiempo.tiempo_cola = 0;

@@ -22,7 +22,7 @@ function createToast(message: string, type: string) {
 
     setTimeout(() => {
         notif.remove();
-    }, 3000);
+    }, 5000);
 }
 
 function setProperties(type: string){
