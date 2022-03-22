@@ -240,9 +240,12 @@ const handler = () => {
         if (seconds < p.tiempo.tiempo_llegada) {
             return;
         }
-        p.tiempo.tiempo_cola++;
-        if (p.tiempo.tiempo_cola >= tiempoMax) {
+        v[i].tiempo.tiempo_cola++;
+        if (v[i].tiempo.tiempo_cola >= tiempoMax) {
             v[i].tiempo.tiempo_cola = 0;
+            v[i].tipo = 'fcfs';
+            registrarProcesoFCFS(v[i]);
+            eliminarProcesoSTF(v[i]);
             colaFCFS.push(...v.splice(i, 1));
             createToast(`El proceso ${p.nombre} ha sido movido a la cola FCFS.`, 'info');
         }
@@ -251,9 +254,12 @@ const handler = () => {
         if (seconds < p.tiempo.tiempo_llegada) {
             return;
         }
-        p.tiempo.tiempo_cola++;
-        if (p.tiempo.tiempo_cola >= tiempoMax) {
+        v[i].tiempo.tiempo_cola++;
+        if (v[i].tiempo.tiempo_cola >= tiempoMax) {
             v[i].tiempo.tiempo_cola = 0;
+            v[i].tipo = 'stf';
+            registrarProcesoSTF(v[i]);
+            eliminarProcesoRR(v[i]);
             colaSTF.push(...v.splice(i, 1));
             createToast(`El proceso ${p.nombre} ha sido movido a la cola STF.`, 'info');
         }

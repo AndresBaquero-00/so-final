@@ -35,6 +35,30 @@ const registrarProcesoRR = (proceso: Proceso) => {
          </tr>`;
 };
 /**
+ * Funcion encargada de eliminar un proceso de la tabla de procesos STF.
+ * @param proceso El proceso que se va a eliminar.
+ */
+const eliminarProcesoSTF = (proceso: Proceso) => {
+    for (const child of tableSTF.children[1].children) {
+        if (child.children[0].innerHTML === proceso.nombre) {
+            child.remove();
+            break;
+        }
+    }
+};
+/**
+ * Funcion encargada de eliminar un proceso de la tabla de procesos RR.
+ * @param proceso El proceso que se va a eliminar.
+ */
+const eliminarProcesoRR = (proceso: Proceso) => {
+    for (const child of tableRR.children[1].children) {
+        if (child.children[0].innerHTML === proceso.nombre) {
+            child.remove();
+            break;
+        }
+    }
+};
+/**
  * Función que agrega el proceso en ejecución a la tabla de procesos ejecutados.
  * @param proceso 
  */
