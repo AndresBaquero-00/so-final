@@ -112,16 +112,31 @@ const datosProceso = (proceso: Proceso): Proceso => {
         proceso.tiempo.tiempo_comienzo = ultimoProceso.tiempo.tiempo_final >= proceso.tiempo.tiempo_llegada ? 
             ultimoProceso.tiempo.tiempo_final : proceso.tiempo.tiempo_llegada;
 
-        if (proceso.bloqueo.bloqueado) {
+        if (proceso.padre && proceso.padre.bloqueo.bloqueado) {
             proceso.tiempo.tiempo_comienzo += proceso.bloqueo.tiempo_block;
         }
     }
 
     proceso.tiempo.tiempo_final = proceso.tiempo.tiempo_comienzo + proceso.tiempo.tiempo_ejecutado;
-    proceso.tiempo.tiempo_retorno = proceso.bloqueo.bloqueado ?
-        proceso.tiempo.tiempo_final - proceso.bloqueo.tiempo_llegada:proceso.tiempo.tiempo_final - proceso.tiempo.tiempo_llegada;
-    proceso.tiempo.tiempo_espera += proceso.tiempo.tiempo_retorno - proceso.tiempo.tiempo_ejecutado;
+    proceso.tiempo.tiempo_retorno = proceso.padre && proceso.padre.bloqueo.bloqueado ?
+        proceso.tiempo.tiempo_final - proceso.padre.bloqueo.tiempo_llegada:proceso.tiempo.tiempo_final - proceso.tiempo.tiempo_llegada;
     
+    
+    if (proceso.padre) {
+        if (proceso.padre.bloqueo.bloqueado) {
+            proceso.tiempo.tiempo_espera = proceso.padre.tiempo.tiempo_espera + proceso.tiempo.tiempo_retorno - proceso.tiempo.tiempo_llegada;
+        } else {
+            proceso.tiempo.tiempo_espera = proceso.tiempo.tiempo_retorno;
+            let p = proceso;
+            while (p !== undefined) {
+                proceso.tiempo.tiempo_espera -= p.tiempo.tiempo_ejecutado;
+                p = p.padre;
+            }
+        }
+    } else {
+        proceso.tiempo.tiempo_espera = proceso.tiempo.tiempo_retorno - proceso.tiempo.tiempo_ejecutado;
+    }
+
     return proceso;
 }
 /**
@@ -261,7 +276,7 @@ const handler = (): void => {
         }
 
         v[i].tiempo.tiempo_cola++;
-        if (v[i].tiempo.tiempo_cola >= tiempoMax) {
+        if (v[i].tiempo.tiempo_cola >= tiempoMax && colaFCFS.length >= 1) {
             v[i].tiempo.tiempo_cola = 0;
             v[i].tipo = 'fcfs';
             registrarProcesoFCFS(v[i]);
@@ -277,7 +292,7 @@ const handler = (): void => {
         }
 
         v[i].tiempo.tiempo_cola++;
-        if (v[i].tiempo.tiempo_cola >= tiempoMax) {
+        if (v[i].tiempo.tiempo_cola >= tiempoMax && colaSTF.length >= 1) {
             v[i].tiempo.tiempo_cola = 0;
             v[i].tipo = 'stf';
             registrarProcesoSTF(v[i]);
